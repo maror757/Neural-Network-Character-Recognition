@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 // Global variables
 let isWriting = false
 let cnv_height = 280
@@ -21,13 +20,6 @@ function setup() {
   cnv_graphics.background(0)
   cnv_graphics.stroke(255)
   cnv_graphics.strokeWeight(8)
-=======
-function setup() {
-  createCanvas(280, 280)
-  background(0)
-  stroke(255)
-  strokeWeight(5)
->>>>>>> Stashed changes
 
   // Listening if the user is writing to the canvas.
   // Sets isWriting to true/false
@@ -57,7 +49,6 @@ function setup() {
   })
 }
 
-<<<<<<< Updated upstream
 // Draw (loops all the time)
 function draw() {
   // Is the user writing on the canvas?
@@ -73,14 +64,6 @@ function draw() {
   image(cnv_graphics, 0, 0);
   // Blur
   filter(BLUR, 1.5);
-=======
-function resetSketch() {
-  console.log("resetSketch")
-  clear()
-  background(0)
-  stroke(255)
-  strokeWeight(5)
->>>>>>> Stashed changes
 }
 
 function predict() {
@@ -94,10 +77,3 @@ function predict() {
   mat = math.multiply(mat, 1/255)
   console.log("mat ", mat);
 }
-<<<<<<< Updated upstream
-=======
-
-function draw() {
-
-}
->>>>>>> Stashed changes
