@@ -2,9 +2,9 @@ const IMAGE_H = 28;
 const IMAGE_W = 28;
 const IMAGE_SIZE = IMAGE_H * IMAGE_W;
 const NUM_CLASSES = 10;
-const NUM_DATASET_ELEMENTS = 65000;
+const NUM_DATASET_ELEMENTS = 60; //65000
 
-const NUM_TRAIN_ELEMENTS = 5000; //55000
+const NUM_TRAIN_ELEMENTS = 50; //55000
 const NUM_TEST_ELEMENTS = NUM_DATASET_ELEMENTS - NUM_TRAIN_ELEMENTS;
 
 const MNIST_IMAGES_SPRITE_PATH =
@@ -30,7 +30,7 @@ class MnistData {
         const datasetBytesBuffer =
             new ArrayBuffer(NUM_DATASET_ELEMENTS * IMAGE_SIZE * 4);
 
-        const chunkSize = 5000;
+        const chunkSize = 5; //5000
         canvas.width = img.width;
         canvas.height = chunkSize;
 
