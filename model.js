@@ -1,16 +1,17 @@
-import * as tf from '@tensorflow/tfjs';
-
+const data = new MnistData();
+data.load();
+console.log(data);
 // This is a helper class for loading and managing MNIST data specifically.
 // It is a useful example of how you could create your own data manager class
 // for arbitrary data though. It's worth a look :)
-import {IMAGE_H, IMAGE_W, MnistData} from './data';
 
 /**
  * Creates a convolutional neural network (Convnet) for the MNIST data.
- *
+ *console.log("");
  * returns {tf.Model} An instance of tf.Model.
  */
-function createConvModel() {
+ function createConvModel() {
+
   // Create a sequential neural network model. tf.sequential provides an API
   // for creating "stacked" models where the output from one layer is used as
   // the input to the next layer.
@@ -26,7 +27,7 @@ function createConvModel() {
     kernelSize: 5,                      //The size of the sliding convolutional filter windows (5x5)
     filters: 16,                        //The number of filter windows of size kernelSize to apply to the input data
     strides: 1,                         //Here the filter will slide over the image in steps of 1 pixel.
-    activation: 'relu'
+    activation: 'relu',
     kernelInitializer: 'VarianceScaling'//The method to use for randomly initializing the model weights
   }));
 
@@ -77,4 +78,33 @@ function createConvModel() {
   model.add(tf.layers.dense({units: 10, activation: 'softmax'}));
 
   return model;
+}
+
+createConvModel();
+async function train(model) {
+
+  const LEARNING_RATE = 0.01;
+
+  console.log("train");
+  //Optimizer minimises the loss function.
+  //rmsprop: Divide the	learning rate for a weight by a running	average	of the
+  //magnitudes of	recent gradients for that weight.
+  //"RMS" = Root Mean Squared
+  const optimizer = 'rmsprop';
+
+  // We compile our model by specifying an optimizer, a loss function, and a
+  // list of metrics that we will use for model evaluation. Here we're using a
+  // categorical crossentropy loss, the standard choice for a multi-class
+  // classification problem like MNIST digits.
+  // The categorical crossentropy loss is differentiable and hence makes
+  // model training possible. But it is not amenable to easy interpretation
+  // by a human. This is why we include a "metric", namely accuracy, which is
+  // simply a measure of how many of the examples are classified correctly.
+  // This metric is not differentiable and hence cannot be used as the loss
+  // function of the model.
+  model.compile({
+    optimizer,
+    loss: 'categoricalCrossentropy',
+    metrics: ['accuracy'],
+  });
 }
