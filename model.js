@@ -1,6 +1,23 @@
-const data = new MnistData();
-data.load();
-console.log(data);
+
+let data;
+async function load() {
+  data = new MnistData();
+  await data.load();
+}
+
+
+async function gitgud()
+{
+  await load();
+  //const trainData = data.getTrainData();
+  const testData = data.getTestData(5);
+    console.log(testData);
+}
+
+gitgud();
+
+
+
 // This is a helper class for loading and managing MNIST data specifically.
 // It is a useful example of how you could create your own data manager class
 // for arbitrary data though. It's worth a look :)
