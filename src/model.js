@@ -76,8 +76,8 @@ export class NeuralNetwork {
     async train(data) {
         console.log('training model ...')
 
-        const num_train = NUM_DATASET_ELEMENTS - 1500
-        const num_test = 1500 
+        const num_train = 100;
+        const num_test = 10;
 
         const num_examples = num_train + num_test
 
@@ -91,8 +91,33 @@ export class NeuralNetwork {
         const [train_xs, test_xs] = tf.split(all_data.xs, [num_train, num_test])
         const [train_labels, test_labels] = tf.split(all_data.labels, [num_train, num_test])
 
-        await this.model.fit(train_xs, train_labels);
-        
+        const numOfEpochs = 2;
+        let trainBatchCount = 0;
+        const totalNumBatches =
+            Math.ceil(train_xs.shape[0] * (1 - 0.15) / 64) *
+            numOfEpochs;
+        await this.model.fit(train_xs, train_labels,
+          {
+            batch_size: 64,
+            validation_split: 0.15,
+            epochs: numOfEpochs,
+            callbacks: {
+              onBatchEnd: async (batch, logs) => {
+                trainBatchCount++;
+                console.log(
+                  '('+ `${(trainBatchCount / totalNumBatches * 100 / numOfEpochs).toFixed(1)}%` +
+                    ` complete). To stop training, refresh or close page.`);
+                await tf.nextFrame();
+              },
+              onEpochEnd: async (epoch, logs) => {
+                let ep = epoch + 1;
+                console.log('epoch '+ ep + ' ended \nstarting next epoch...')
+                await tf.nextFrame();
+              }
+            }
+          }
+        );
+
         const testResult = await this.model.evaluate(test_xs, test_labels);
         const testAccPercent = testResult[1].dataSync()[0] * 100;
         this.final_acc = testAccPercent.toFixed(1);
@@ -115,6 +140,6 @@ export class NeuralNetwork {
         })
 
         console.log('done');
-        
+
     }
 }
