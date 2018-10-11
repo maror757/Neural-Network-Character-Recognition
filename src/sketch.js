@@ -32,10 +32,11 @@ const sketch = function( p ) {
             cnv.line(p.mouseX, p.mouseY, p.pmouseX, p.pmouseY);
         }
     }
-    
+
     p.get_pixels = () => {
-        p.loadPixels()
-        return p.pixels
+        p.loadPixels();
+        p.set();
+        return p.pixels;
     }
 
     p.clear_pixels = () => {
