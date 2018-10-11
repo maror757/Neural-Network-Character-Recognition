@@ -1,4 +1,3 @@
-import * as tf from '@tensorflow/tfjs'
 import { MnistData } from './data'
 import { NeuralNetwork } from './model'
 import sketch from './sketch'
@@ -6,9 +5,10 @@ import p5 from 'p5'
 
 // Maybe remove p5 and keep @types/p5
 
-let canvas
-let model
-let data
+var c = new p5(sketch)
+
+var model
+var data
 
 const CREATE_NEW = false
 
@@ -38,42 +38,25 @@ function on_startup() {
   } else {
     load_old_model()
   }
-
-  canvas = new p5(sketch)
 }
 
 on_startup()
-/*
-/// UI
 
+
+/// Detta ska ligga i ui.js sen
+
+// skapa en knapp
 function component() {
   let element = document.createElement('BUTTON');
   element.innerHTML = 'get pixels'
   element.id = 'btn'
   return element;
 }
-
 document.body.appendChild(component());
 
+// lyssna på knapptryck
 const btn_element = document.getElementById('btn');
-
 btn_element.onclick = function () {
-
-  let temp = canvas.get_pixels()
+  var temp = c.get_pixels()
   console.log(temp);
-
-
 };
-
-
-let xs = tf.tensor4d(
-  this.trainImages,
-  [this.trainImages.length / IMAGE_SIZE, IMAGE_H, IMAGE_W, 1]);
-let labels = tf.tensor2d(
-  this.trainLabels, [this.trainLabels.length / NUM_CLASSES, NUM_CLASSES]);
-
-if (numExamples != null) {
-  xs = xs.slice([0, 0, 0, 0], [numExamples, IMAGE_H, IMAGE_W, 1]);
-  labels = labels.slice([0, 0], [numExamples, NUM_CLASSES]);
-}
-*/
