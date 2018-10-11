@@ -109,4 +109,11 @@ export class MnistData {
             return { xs, labels };
         })
     }
+
+    transformToTensor(data) {
+        return tf.tidy(() => {
+            let xs = tf.tensor4d();
+            return xs;
+        })
+    }
 }

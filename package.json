@@ -21,6 +21,8 @@
   },
   "dependencies": {
     "@tensorflow/tfjs": "^0.13.1",
-    "build": "^0.1.4"
+    "@types/p5": "^0.7.0",
+    "build": "^0.1.4",
+    "p5": "^0.7.2"
   }
 }
