@@ -58,11 +58,11 @@ document.body.appendChild(component());
 // lyssna på knapptryck
 const btn_element = document.getElementById('btn');
 btn_element.onclick = function () {
-  var temp = c.get_pixels();
+  var cnvPixels = c.get_pixels();
   //c.clear_pixels();
-  let tempToTensor = data.transformToTensor(temp);
-  model.show_prediction(tempToTensor);
-  //tempToTensor.tf.dispose(); DISPOSE DOESNT WORK ? :S
+  let cnvTensor = data.transformToTensor(cnvPixels);
+  model.show_prediction(cnvTensor);
+  //cnvTensor.tf.dispose(); DISPOSE DOESNT WORK ? :S
 };
 
 function clear() {
