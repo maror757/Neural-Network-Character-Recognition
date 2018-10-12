@@ -1,4 +1,5 @@
-import { MnistData } from './data'
+import * as tf from '@tensorflow/tfjs'
+import { MnistData} from './data'
 import { NeuralNetwork } from './model'
 import sketch from './sketch'
 import p5 from 'p5'
@@ -57,6 +58,22 @@ document.body.appendChild(component());
 // lyssna på knapptryck
 const btn_element = document.getElementById('btn');
 btn_element.onclick = function () {
-  var temp = c.get_pixels()
-  console.log(temp);
+  var temp = c.get_pixels();
+  //c.clear_pixels();
+  let tempToTensor = data.transformToTensor(temp);
+  model.show_prediction(tempToTensor);
+  //tempToTensor.tf.dispose(); DISPOSE DOESNT WORK ? :S
+};
+
+function clear() {
+  let element = document.createElement('BUTTON');
+  element.innerHTML = 'clear pixls'
+  element.id = 'clrbtn'
+  return element;
+}
+document.body.appendChild(clear());
+
+const btn_element2 = document.getElementById('clrbtn');
+btn_element2.onclick = function () {
+  c.clear_pixels();
 };

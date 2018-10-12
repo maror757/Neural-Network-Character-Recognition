@@ -77,10 +77,10 @@ export class NeuralNetwork {
     async train(data) {
         console.log('training model ...')
 
-        const num_test = 1500
-        const num_train = 5000 - num_test;
+        const num_test = 1000;
+        const num_train = 20000 - num_test;
 
-        const num_examples = num_train + num_test
+        const num_examples = num_train + num_test;
 
         if (NUM_DATASET_ELEMENTS < num_examples) {
             console.log('Not enough training images');
@@ -99,7 +99,6 @@ export class NeuralNetwork {
         const totalNumBatches =
             Math.ceil(train_xs.shape[0] * (1 - validationSplit) / batchSize * numOfEpochs ) ;
         let log10percent = Math.round(totalNumBatches / 10);
-        //await this.model.fit(train_xs, train_labels)
 
         await this.model.fit(train_xs, train_labels,
         {
@@ -117,14 +116,13 @@ export class NeuralNetwork {
                         ` complete). To stop training, refresh or close page.`);
                     await tf.nextFrame();
                   }
-              },
-              /*onEpochEnd: async (epoch, logs) => {
+              }
+              /*,onEpochEnd: async (epoch, logs) => {
                   console.log('epoch ended..')
                   await tf.nextFrame();
               }*/
             }
-        }
-        );
+        });
 
         const testResult = await this.model.evaluate(test_xs, test_labels);
         const testAccPercent = testResult[1].dataSync()[0] * 100;
@@ -140,14 +138,12 @@ export class NeuralNetwork {
             const output = this.model.predict(data.xs);
 
             const axis = 1;
-            const labels = Array.from(data.labels.argMax(axis).dataSync());
+            //const labels = Array.from(data.labels.argMax(axis).dataSync());
             const predictions = Array.from(output.argMax(axis).dataSync());
 
             console.log('Guess: ', predictions);
-            console.log('Ans: ', labels);
+            //console.log('Ans: ', labels);*/
         })
-
         console.log('done');
-
     }
 }

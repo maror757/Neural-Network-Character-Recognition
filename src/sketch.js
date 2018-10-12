@@ -1,24 +1,24 @@
 const sketch = function( p ) {
     // Other variables
     let isWriting = false
-    let cnv_height = 280
-    let cnv_width = 280
+    let cnv_height = 28
+    let cnv_width = 28
     let cnv
 
     p.setup = () => {
         cnv = p.createCanvas(cnv_height, cnv_width)
         cnv.background(0)
         cnv.stroke(255)
-        cnv.strokeWeight(8)
+        cnv.strokeWeight(2)
 
         const isWritingDecider = (b) => {
             if (b) {
                 isWriting = true
-                console.log('isWriting', isWriting);
+                //console.log('isWriting', isWriting);
 
             } else if (!b && isWriting) {
                 isWriting = false
-                console.log('isWriting', isWriting);
+                //console.log('isWriting', isWriting);
             }
         }
 
