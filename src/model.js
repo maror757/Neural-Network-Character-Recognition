@@ -136,12 +136,11 @@ export class NeuralNetwork {
 
         tf.tidy(() => {
             const output = this.model.predict(data.xs);
-
             const axis = 1;
-            //const labels = Array.from(data.labels.argMax(axis).dataSync());
             const predictions = Array.from(output.argMax(axis).dataSync());
-
             console.log('Guess: ', predictions);
+
+            //const labels = Array.from(data.labels.argMax(axis).dataSync());
             //console.log('Ans: ', labels);*/
         })
         console.log('done');
