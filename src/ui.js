@@ -5,5 +5,6 @@ document.body.appendChild(div);
 const statusElement = document.getElementById('status');
 
 export function log(message) {
-  statusElement.innerText = message;
+  div.innerText = 'Status text:'
+  statusElement.innerText += message;
 }
