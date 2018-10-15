@@ -92,7 +92,7 @@ export class NeuralNetwork {
         const [train_xs, test_xs] = tf.split(all_data.xs, [num_train, num_test])
         const [train_labels, test_labels] = tf.split(all_data.labels, [num_train, num_test])
 
-        const numOfEpochs = 2;
+        const numOfEpochs = 3;
         const batchSize = 64;
         const validationSplit = 0.15;
         let trainBatchCount = 0;
@@ -105,6 +105,7 @@ export class NeuralNetwork {
             batchSize,
             validationSplit,
             epochs: numOfEpochs,
+            shuffle: true,
             callbacks:
             {
               onBatchEnd: async (batch, logs) => {
@@ -136,9 +137,17 @@ export class NeuralNetwork {
 
         tf.tidy(() => {
             const output = this.model.predict(data.xs);
-            const axis = 1;
-            const predictions = Array.from(output.argMax(axis).dataSync());
-            console.log('Guess: ', predictions);
+            const predictions_res = Array.from(output.argMax(1).dataSync())[0];
+            const predictions_acc = Array.from(output.dataSync());
+
+            if (predictions_acc[predictions_res] < 0.5) {
+                console.log('Im not sure');
+
+            } else {
+                console.log('Guess: ', predictions_res);
+            }
+            console.log(predictions_acc.map((elem) => { return elem.toFixed(2)}));
+            
 
             //const labels = Array.from(data.labels.argMax(axis).dataSync());
             //console.log('Ans: ', labels);*/

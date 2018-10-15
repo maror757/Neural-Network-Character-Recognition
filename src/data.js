@@ -113,18 +113,24 @@ export class MnistData {
      transformToTensor(data) {
 
        const datasetBytesBuffer = new ArrayBuffer(IMAGE_SIZE * 4);
-
        const datasetBytesView = new Float32Array(datasetBytesBuffer, 0, IMAGE_SIZE);
 
-       for (let j = 0; j < data.length / 4; j++) {
-           datasetBytesView[j] = data[j * 4] / 255;
+        //console.log('data ', data);
+
+       for (var j = 0; j < data.data.length / 4; j++) {
+           datasetBytesView[j] = data.data[j * 4] / 255;
        }
+
+       //console.log('datasetBytesView', datasetBytesView);
+
        var flt32ar = new Float32Array(datasetBytesBuffer);
        var testData = flt32ar.slice(0, IMAGE_SIZE);
 
+       //console.log('testData', testData);
+
         return tf.tidy(() => {
-            let xs = tf.tensor4d(flt32ar, [flt32ar.length / IMAGE_SIZE, IMAGE_H, IMAGE_W, 1]);
-            return {xs};
+            let xs = tf.tensor4d(testData, [testData.length / IMAGE_SIZE, IMAGE_H, IMAGE_W, 1]);
+            return { xs };
         })
     }
 }
