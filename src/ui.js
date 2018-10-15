@@ -1,11 +1,6 @@
-
-
-
 var div = document.createElement('div');
 div.id = 'status';
 document.body.appendChild(div);
-
-
 
 const statusElement = document.getElementById('status');
 

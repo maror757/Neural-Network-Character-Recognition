@@ -1,4 +1,3 @@
-import * as tf from '@tensorflow/tfjs'
 import { MnistData} from './data'
 import { NeuralNetwork } from './model'
 import sketch from './sketch'
@@ -46,34 +45,31 @@ on_startup()
 
 /// Detta ska ligga i ui.js sen
 
-// skapa en knapp
-function component() {
-  let element = document.createElement('BUTTON');
-  element.innerHTML = 'get pixels'
-  element.id = 'btn'
-  return element;
-}
-document.body.appendChild(component());
-
-// lyssna på knapptryck
-const btn_element = document.getElementById('btn');
-btn_element.onclick = function () {
-  var cnvPixels = c.get_pixels();
-  //c.clear_pixels();
-  let cnvTensor = data.transformToTensor(cnvPixels);
-  model.show_prediction(cnvTensor);
-  //cnvTensor.tf.dispose(); DISPOSE DOESNT WORK ? :S
-};
-
 function clear() {
   let element = document.createElement('BUTTON');
   element.innerHTML = 'clear pixls'
   element.id = 'clrbtn'
+
+  element.addEventListener('click', (event) => {
+    c.clear_pixels();
+  });
+
   return element;
 }
-document.body.appendChild(clear());
 
-const btn_element2 = document.getElementById('clrbtn');
-btn_element2.onclick = function () {
-  c.clear_pixels();
-};
+function drawing() {
+  let element = document.createElement('div');
+  element.id = 'drawing'
+
+  element.addEventListener('click', (event) => {
+    // Time out?
+    var cnvPixels = c.get_pixels();
+    let cnvTensor = data.transformToTensor(cnvPixels);
+    model.show_prediction(cnvTensor);
+  });
+
+  return element;
+}
+
+document.body.appendChild(drawing());
+document.body.appendChild(clear());

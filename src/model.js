@@ -1,6 +1,5 @@
 import * as tf from '@tensorflow/tfjs'
 import { IMAGE_H, IMAGE_W, NUM_DATASET_ELEMENTS } from './data';
-import {Interface} from './ui';
 import * as ui from './ui';
 
 export class NeuralNetwork {
@@ -148,12 +147,11 @@ export class NeuralNetwork {
             } else {
                 ui.log('Guess: ' + predictions_res);
             }
-            ui.log(predictions_acc.map((elem) => { return elem.toFixed(2)}));
+            console.log(predictions_acc.map((elem) => { return elem.toFixed(2)}));
 
 
             //const labels = Array.from(data.labels.argMax(axis).dataSync());
             //ui.log('Ans: ', labels);*/
         })
-        ui.log('done');
     }
 }
