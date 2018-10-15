@@ -1,5 +1,7 @@
 import * as tf from '@tensorflow/tfjs'
 import { IMAGE_H, IMAGE_W, NUM_DATASET_ELEMENTS } from './data';
+import {Interface} from './ui';
+import * as ui from './ui';
 
 export class NeuralNetwork {
     constructor() {
@@ -8,7 +10,7 @@ export class NeuralNetwork {
     }
 
     compile() {
-        console.log('compiling model ...')
+        ui.log('compiling model ...')
 
         this.model.add(tf.layers.conv2d({
             inputShape: [IMAGE_H, IMAGE_W, 1],
@@ -48,34 +50,34 @@ export class NeuralNetwork {
             loss: 'categoricalCrossentropy',
             metrics: ['accuracy'],
         });
-        console.log('done')
+        ui.log('done')
     }
 
     async save() {
-        console.log('saving model ...');
+        ui.log('saving model ...');
         try {
             await this.model.save('localstorage://my_model')
             localStorage.setItem('final_acc', this.final_acc);
-            console.log('done');
+            ui.log('done');
         } catch (e) {
-            console.log('could not save model');
+            ui.log('could not save model');
         }
     }
 
     async load() {
-        console.log('loading model ...')
+        ui.log('loading model ...')
+
         try {
             this.model = await tf.loadModel('localstorage://my_model')
             this.final_acc = localStorage.getItem('final_acc');
-            console.log('Test accuracy:', this.final_acc, '%');
-            console.log('done')
+            ui.log('Test accuracy:'+  this.final_acc + '%');
         } catch (e) {
-            console.log('model could not load');
+            ui.log('model could not load');
         }
     }
 
     async train(data) {
-        console.log('training model ...')
+        ui.log('training model ...')
 
         const num_test = 1000;
         const num_train = 20000 - num_test;
@@ -83,7 +85,7 @@ export class NeuralNetwork {
         const num_examples = num_train + num_test;
 
         if (NUM_DATASET_ELEMENTS < num_examples) {
-            console.log('Not enough training images');
+            ui.log('Not enough training images');
             return
         }
 
@@ -112,14 +114,14 @@ export class NeuralNetwork {
                   trainBatchCount++;
                   if( (trainBatchCount % log10percent) == 0  || trainBatchCount == totalNumBatches)
                   {
-                    console.log(
+                    ui.log(
                         '(' + `${( trainBatchCount / totalNumBatches * 100 ).toFixed(1)}%` +
                         ` complete). To stop training, refresh or close page.`);
                     await tf.nextFrame();
                   }
               }
               /*,onEpochEnd: async (epoch, logs) => {
-                  console.log('epoch ended..')
+                  ui.log('epoch ended..')
                   await tf.nextFrame();
               }*/
             }
@@ -128,12 +130,12 @@ export class NeuralNetwork {
         const testResult = await this.model.evaluate(test_xs, test_labels);
         const testAccPercent = testResult[1].dataSync()[0] * 100;
         this.final_acc = testAccPercent.toFixed(1);
-        console.log('Final test accuracy:', this.final_acc, '%');
-        console.log('done')
+        ui.log('Final test accuracy:'+ this.final_acc+ '%');
+        ui.log('done')
     }
 
     show_prediction(data) {
-        console.log('predicting')
+        ui.log('predicting')
 
         tf.tidy(() => {
             const output = this.model.predict(data.xs);
@@ -141,17 +143,17 @@ export class NeuralNetwork {
             const predictions_acc = Array.from(output.dataSync());
 
             if (predictions_acc[predictions_res] < 0.5) {
-                console.log('Im not sure');
+                ui.log('Im not sure');
 
             } else {
-                console.log('Guess: ', predictions_res);
+                ui.log('Guess: ' + predictions_res);
             }
-            console.log(predictions_acc.map((elem) => { return elem.toFixed(2)}));
-            
+            ui.log(predictions_acc.map((elem) => { return elem.toFixed(2)}));
+
 
             //const labels = Array.from(data.labels.argMax(axis).dataSync());
-            //console.log('Ans: ', labels);*/
+            //ui.log('Ans: ', labels);*/
         })
-        console.log('done');
+        ui.log('done');
     }
 }
