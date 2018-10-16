@@ -1,15 +1,17 @@
 import * as tf from '@tensorflow/tfjs'
+import * as ui from './ui'
 import { IMAGE_H, IMAGE_W, NUM_DATASET_ELEMENTS } from './data';
-import * as ui from './ui';
 
 export class NeuralNetwork {
     constructor() {
         this.model = tf.sequential();
         this.final_acc = 0;
+        ui.log_status('Creating model ...')
     }
 
     compile() {
-        ui.log('compiling model ...')
+        console.log('compiling model ...')
+        ui.log_status('Compiling model ...')
 
         this.model.add(tf.layers.conv2d({
             inputShape: [IMAGE_H, IMAGE_W, 1],
@@ -49,42 +51,49 @@ export class NeuralNetwork {
             loss: 'categoricalCrossentropy',
             metrics: ['accuracy'],
         });
-        ui.log('done')
+        console.log('done')
     }
 
     async save() {
-        ui.log('saving model ...');
+        console.log('saving model ...');
         try {
             await this.model.save('localstorage://my_model')
             localStorage.setItem('final_acc', this.final_acc);
-            ui.log('done');
+            console.log('done');
         } catch (e) {
-            ui.log('could not save model');
+            console.log('could not save model');
         }
     }
 
     async load() {
-        ui.log('loading model ...')
+        console.log('loading model ...')
 
         try {
             this.model = await tf.loadModel('localstorage://my_model')
             this.final_acc = localStorage.getItem('final_acc');
-            ui.log('Test accuracy:'+  this.final_acc + '%');
+            console.log('Test accuracy:'+  this.final_acc + '%');
         } catch (e) {
-            ui.log('model could not load');
+            console.log('model could not load');
         }
+
+        ui.log_status('Test accuracy '+ this.final_acc+ '%')
+        setTimeout(function(){ ui.log_status('Draw a number in the black box') }, 5000);
     }
 
     async train(data) {
-        ui.log('training model ...')
+        console.log('training model ...')
+        ui.log_status('Training model ...')
 
-        const num_test = 1000;
-        const num_train = 20000 - num_test;
+        //const num_test = 100;
+        //const num_train = 1000 - num_test;
+        //const num_examples = num_train + num_test;
 
+        const num_test = 10000;
+        const num_train = NUM_DATASET_ELEMENTS - num_test;
         const num_examples = num_train + num_test;
 
         if (NUM_DATASET_ELEMENTS < num_examples) {
-            ui.log('Not enough training images');
+            console.log('Not enough training images');
             return
         }
 
@@ -113,45 +122,51 @@ export class NeuralNetwork {
                   trainBatchCount++;
                   if( (trainBatchCount % log10percent) == 0  || trainBatchCount == totalNumBatches)
                   {
-                    ui.log(
+                    console.log(
                         '(' + `${( trainBatchCount / totalNumBatches * 100 ).toFixed(1)}%` +
                         ` complete). To stop training, refresh or close page.`);
                     await tf.nextFrame();
+
+                    ui.log_status('Training model ... ' + (trainBatchCount / totalNumBatches * 100).toFixed(1) + '%')
                   }
               }
-              /*,onEpochEnd: async (epoch, logs) => {
-                  ui.log('epoch ended..')
-                  await tf.nextFrame();
-              }*/
             }
         });
 
         const testResult = await this.model.evaluate(test_xs, test_labels);
         const testAccPercent = testResult[1].dataSync()[0] * 100;
         this.final_acc = testAccPercent.toFixed(1);
-        ui.log('Final test accuracy:'+ this.final_acc+ '%');
-        ui.log('done')
+        console.log('Final test accuracy '+ this.final_acc+ ' %');
+        console.log('done')
+        ui.log_status('Test accuracy '+ this.final_acc+ '%')
+
+        setTimeout(function(){ ui.log_status('Draw a number in the black box') }, 5000);
     }
 
     show_prediction(data) {
-        ui.log('predicting')
+        console.log('predicting')
+        //ui.log_status('Predicting')
 
         tf.tidy(() => {
             const output = this.model.predict(data.xs);
             const predictions_res = Array.from(output.argMax(1).dataSync())[0];
             const predictions_acc = Array.from(output.dataSync());
 
-            if (predictions_acc[predictions_res] < 0.5) {
-                ui.log('Im not sure');
+            if (predictions_acc[predictions_res] < 0.6) {
+                console.log('Hm');
+                ui.log_guess('Hm')
 
             } else {
-                ui.log('Guess: ' + predictions_res);
+                console.log('Guess: ' + predictions_res);
+                ui.log_guess(predictions_res)
             }
             console.log(predictions_acc.map((elem) => { return elem.toFixed(2)}));
 
+            //ui.log_info(predictions_acc.map((elem) => { return (elem*100).toFixed(0)}))
+            ui.log_info((predictions_acc[predictions_res]*100).toFixed(0) + '%')
 
             //const labels = Array.from(data.labels.argMax(axis).dataSync());
-            //ui.log('Ans: ', labels);*/
+            //console.log('Ans: ', labels);*/
         })
     }
 }

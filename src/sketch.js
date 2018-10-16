@@ -1,17 +1,17 @@
 const sketch = function (p) {
     // Other variables
-    let isWriting = false
-    let cnv_height = 280
-    let cnv_width = 280
-    let cnv
+    const scale = 20
+    var isWriting = false
+    var cnv_height = 28*scale
+    var cnv_width = 28*scale
+    var cnv
 
     p.setup = () => {
         cnv = p.createCanvas(cnv_height, cnv_width)
-        cnv.parent("drawing");
-        console.log('j');
+        cnv.parent("canvas_container");
         cnv.background(0)
         cnv.stroke(255)
-        cnv.strokeWeight(20)
+        cnv.strokeWeight(2 * scale)
 
         const isWritingDecider = (b) => {
             if (b) {
@@ -36,17 +36,16 @@ const sketch = function (p) {
     }
 
     p.get_pixels = () => {
-
         var canvas = document.getElementById('defaultCanvas0');
-        
+
         var canvas_scaled = document.createElement('canvas');
         var ctx_scaled = canvas_scaled.getContext('2d');
 
-        ctx_scaled.drawImage( canvas, 0, 0, 0.1*canvas.width, 0.1*canvas.height );
-        const image_data = ctx_scaled.getImageData(0, 0, 0.1*canvas.width, 0.1*canvas.height)
+        ctx_scaled.drawImage( canvas, 0, 0, 1 / scale * canvas.width, 1 / scale *canvas.height );
+        const image_data = ctx_scaled.getImageData(0, 0, 1 / scale * canvas.width, 1 / scale * canvas.height)
 
         //console.log(image_data);
-        
+
         return image_data
     }
 

@@ -1,16 +1,15 @@
 import { MnistData} from './data'
 import { NeuralNetwork } from './model'
 import sketch from './sketch'
+import * as ui from './ui'
 import p5 from 'p5'
 
-// Maybe remove p5 and keep @types/p5
+const CREATE_NEW = false
 
-var c = new p5(sketch)
-
+var drawing
 var model
 var data
-
-const CREATE_NEW = false
+var interval_prediction
 
 async function create_new_model() {
   console.log('clear local storage')
@@ -32,44 +31,47 @@ async function load_old_model() {
   await model.load()
 }
 
-function on_startup() {
+function predict() {
+  let drawing_pixels = drawing.get_pixels()
+  let drawing_tensor = data.transformToTensor(drawing_pixels);
+  model.show_prediction(drawing_tensor);
+}
+
+async function on_startup() {
   if (CREATE_NEW) {
-    create_new_model()
+    await create_new_model()
   } else {
-    load_old_model()
+    await load_old_model()
   }
+
+  drawing = new p5(sketch)
+
+  let canvas_element = document.getElementById('canvas_container')
+  canvas_element.addEventListener('mousedown', (event) => {
+    predict()
+     interval_prediction = setInterval(() => { predict() }, 250)
+  });
+
+  canvas_element.addEventListener('click', (event) => {
+    clearInterval(interval_prediction);
+  });
+
+  canvas_element.addEventListener('mouseleave', (event) => {
+    clearInterval(interval_prediction);
+  });
+
+  let new_element = document.createElement('BUTTON');
+  new_element.parent = 'canvas_container'
+  new_element.innerHTML = 'Clear'
+  new_element.id = 'clear_button'
+
+  new_element.addEventListener('click', (event) => {
+    drawing.clear_pixels();
+    ui.log_guess('')
+    ui.log_info('')
+  });
+
+  document.getElementById('button_container').appendChild(new_element);
 }
 
 on_startup()
-
-
-/// Detta ska ligga i ui.js sen
-
-function clear() {
-  let element = document.createElement('BUTTON');
-  element.innerHTML = 'clear pixls'
-  element.id = 'clrbtn'
-
-  element.addEventListener('click', (event) => {
-    c.clear_pixels();
-  });
-
-  return element;
-}
-
-function drawing() {
-  let element = document.createElement('div');
-  element.id = 'drawing'
-
-  element.addEventListener('click', (event) => {
-    // Time out?
-    var cnvPixels = c.get_pixels();
-    let cnvTensor = data.transformToTensor(cnvPixels);
-    model.show_prediction(cnvTensor);
-  });
-
-  return element;
-}
-
-document.body.appendChild(drawing());
-document.body.appendChild(clear());

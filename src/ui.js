@@ -1,10 +1,11 @@
-var div = document.createElement('div');
-div.id = 'status';
-document.body.appendChild(div);
+export function log_guess(input) {
+  document.getElementById('guess_container').innerText = input
+}
 
-const statusElement = document.getElementById('status');
+export function log_status(input) {
+  document.getElementById('status_container').innerText = input
+}
 
-export function log(message) {
-  div.innerText = 'Status text: \u00A0'
-  statusElement.innerText += message;
+export function log_info(input) {
+  document.getElementById('info_container').innerText = input
 }
