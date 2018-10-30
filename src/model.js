@@ -80,16 +80,15 @@ export class NeuralNetwork {
         setTimeout(function(){ ui.log_status('Draw a number in the black box') }, 5000);
     }
 
-    async train(data) {
+    async train(data, num_train_elements) {
         console.log('training model ...')
         ui.log_status('Training model ...')
 
         //const num_test = 100;
         //const num_train = 1000 - num_test;
         //const num_examples = num_train + num_test;
-
-        const num_test = 10000;
-        const num_train = NUM_DATASET_ELEMENTS - num_test;
+        const num_test = 1000;
+        const num_train = num_train_elements - num_test;
         const num_examples = num_train + num_test;
 
         if (NUM_DATASET_ELEMENTS < num_examples) {

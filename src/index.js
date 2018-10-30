@@ -4,14 +4,14 @@ import sketch from './sketch'
 import * as ui from './ui'
 import p5 from 'p5'
 
-const CREATE_NEW = false
+//const CREATE_NEW = false
 
 var drawing
 var model
 var data
 var interval_prediction
 
-async function create_new_model() {
+async function create_new_model(num_train_elements) {
   console.log('clear local storage')
   localStorage.clear()
 
@@ -21,7 +21,7 @@ async function create_new_model() {
   model = new NeuralNetwork()
   await model.compile()
 
-  await model.train(data)
+  await model.train(data, num_train_elements)
   await model.save()
 }
 
@@ -37,9 +37,58 @@ function predict() {
   model.show_prediction(drawing_tensor);
 }
 
+
 async function on_startup() {
+
+  let valueinfo_element = document.createTextNode("Set the ammount of images in the training data you want the model to train on: ");
+  document.getElementById('value_container').appendChild(valueinfo_element);
+
+  let slider_element = document.createElement('INPUT')
+  slider_element.type = "range";
+  slider_element.min = "5000";
+  slider_element.max = "65000";
+  slider_element.value = "40000";
+  slider_element.className = "slider";
+  slider_element.id = "myRange";
+
+  let value_element = document.createTextNode("");
+
+  document.getElementById('slide_container').appendChild(slider_element);
+  document.getElementById('slide_container').appendChild(value_element);
+  value_element.nodeValue = slider_element.value; // Display the default slider value
+  // Update the current slider value (each time you drag the slider handle)
+  slider_element.oninput = function() {
+      value_element.nodeValue = this.value;
+  }
+
+  let button1 = document.createElement('BUTTON');
+  button1.innerHTML = 'Start training'
+  button1.className = "setup_button"
+  let button2 = document.createElement('BUTTON');
+  button2.innerHTML = 'Load model'
+  button2.className = "setup_button"
+  if (localStorage.getItem("final_acc") === null) {
+    button2.disabled = true;
+  }
+
+  document.getElementById('setup_button_container').appendChild(button1);
+  document.getElementById('setup_button_container').appendChild(button2);
+
+  button1.addEventListener('click', (event) => {
+    document.getElementById('initial_container').innerHTML = "";
+    run(true, slider_element.value);
+  });
+  button2.addEventListener('click', (event) => {
+    document.getElementById('initial_container').innerHTML = "";
+    run(false);
+  });
+}
+
+async function run(CREATE_NEW, num_train_elements) {
+
+
   if (CREATE_NEW) {
-    await create_new_model()
+    await create_new_model(num_train_elements)
   } else {
     await load_old_model()
   }
@@ -74,4 +123,4 @@ async function on_startup() {
   document.getElementById('button_container').appendChild(new_element);
 }
 
-on_startup()
+on_startup();
